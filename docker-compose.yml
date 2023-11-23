@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  simplelogin:
+    image: ghcr.io/infinityofspace/simplelogin-docker-aio:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "7777:7777"
+      - "25:25"
+    volumes:
+      - "data:/sl"
+      - "uploads:/code/static/upload"
+      - "./certs/cert.pem:/etc/ssl/certs/cert.pem"
+      - "./certs/cert.key:/etc/ssl/private/cert.key"
+      - "./simplelogin.env:/code/.env"
+    env_file:
+      - db.env
+      - simplelogin.env
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+
+  db:
+    image: postgres:12.1
+    restart: unless-stopped
+    volumes:
+      - "db_data:/var/lib/postgresql/data"
+    env_file:
+      - db.env
+
+volumes:
+  data:
+  uploads:
+  db_data:
