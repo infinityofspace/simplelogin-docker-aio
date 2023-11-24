@@ -32,7 +32,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install all requirements and setup poetry
 RUN pip install -U pip \
     && apt-get update \
-    && apt install -yq curl netcat-traditional gcc python3-dev gnupg git libre2-dev cmake ninja-build supervisor postfix postfix-pgsql \
+    && apt install -yq curl netcat-traditional gcc python3-dev gnupg git libre2-dev cmake ninja-build supervisor postfix postfix-pgsql build-essential libssl-dev libffi-dev cargo pkg-config \
     && curl -sSL https://install.python-poetry.org | python3 - \
     # Remove curl from the image
     && apt-get purge -y curl \
