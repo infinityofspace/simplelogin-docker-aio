@@ -11,45 +11,45 @@ RUN mkdir -p /code/static \
     && cp /src/static/package*.json /code/static/ \
     && cd /code/static && npm ci
 
-# Main image
-FROM python:3.10
+
+FROM python:3.10-alpine as poetry-builder
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE 1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED 1
 
-# Add poetry to PATH
-ENV PATH="${PATH}:/root/.local/bin"
+ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /code
+
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy poetry files
 COPY --from=npm /src/poetry.lock /src/pyproject.toml ./
 
-ENV DEBIAN_FRONTEND=noninteractive
-
 # Install all requirements and setup poetry
-RUN pip install -U pip \
-    && apt-get update \
-    && apt install -yq curl netcat-traditional gcc python3-dev gnupg git libre2-dev cmake ninja-build supervisor postfix postfix-pgsql build-essential libssl-dev libffi-dev cargo pkg-config \
-    && curl -sSL https://install.python-poetry.org | python3 - \
-    # Remove curl from the image
-    && apt-get purge -y curl \
-    # Run poetry
-    && poetry config virtualenvs.create false \
-    && poetry install  --no-interaction --no-ansi --no-root \
-    # Clear apt cache \
-    && apt-get purge -y libre2-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && mkdir -p /var/log/supervisord /var/run/supervisord
+RUN apk add --no-cache poetry gcc g++ re2-dev git python3-dev musl-dev libffi-dev cmake ninja-build
+RUN poetry export -f requirements.txt | pip install -r /dev/stdin
 
 # copy npm packages
 COPY --from=npm /code /code
 
 # copy everything else into /code
 COPY --from=npm /src .
+
+RUN poetry build && pip install dist/*.whl
+
+
+FROM python:3.10-alpine
+
+RUN apk add --no-cache netcat-openbsd re2 libffi gnupg supervisor postfix postfix-pgsql \
+    && mkdir -p /var/log/supervisord /var/run/supervisord \
+    && mkdir -p /var/spool/postfix/etc/
+
+COPY --from=poetry-builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
 # copy postfix configs
 COPY configs/postfix/main.cf /etc/postfix/main.cf
@@ -58,13 +58,16 @@ COPY configs/postfix/pgsql-transport-maps.cf /etc/postfix/pgsql-transport-maps.c
 
 COPY configs/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+WORKDIR /code
+
+COPY --from=npm /src .
 COPY entrypoint.sh .
 
 EXPOSE 7777 25
 
 ENV WEBAPP_WORKERS=2
 
-CMD ["./entrypoint.sh"]
+CMD ["sh", "entrypoint.sh"]
 
 LABEL org.opencontainers.image.source="https://github.com/infinityofspace/simplelogin-docker-aio"
 LABEL org.opencontainers.image.licenses="AGPLv3"
