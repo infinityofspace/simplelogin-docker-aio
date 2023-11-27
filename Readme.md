@@ -58,15 +58,26 @@ the official simplelogin [documentation](https://github.com/simple-login/app#dki
 
 ## Changes
 
-The following changes were made to the original SimpleLogin project:
+The following changes were made to the original SimpleLogin image:
 
 - the default nameserver in the [simplelogin.env](simplelogin.env) file was changed from `1.1.1.1` to `9.9.9.9`
 - images are build for amd64, armv6, armv7 and arm64 instead of only amd64
+- base image uses alpine
+- reduced image size by 75% (440MB vs 1.73GB from `app-ci:v4.36.4` image)
 
 ## Versioning
 
 The image version is the same as the SimpleLogin version. The image version is suffixed with a release number, e.g.
 `1.0.0-1` means that the image is based on SimpleLogin `1.0.0` and it is the first release of the image.
+
+The following tags are available:
+
+- `v*`: tagged version
+- `latest`: equal to latest tagged version
+- `nightly`: build every 3 day from the master branch of the SimpleLogin git repo
+- `dev`: build for each change on the dev branch
+
+_Note: the `nightly` and `dev` tags are not intended for productive use_
 
 ## License
 
@@ -74,5 +85,6 @@ This project is licensed under the AGPLv3 license - see the [License](License) f
 
 Furthermore, this project uses the [SimpleLogin project](https://github.com/simple-login/app), you can find the original
 AGPLv3 license [here](https://github.com/simple-login/app/blob/master/LICENSE).
+
 If you like SimpleLogin, please consider supporting the original
 project [here](https://github.com/simple-login/app#donations-welcome).
