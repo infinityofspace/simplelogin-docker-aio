@@ -1,7 +1,7 @@
 # Install npm packages
 FROM node:10.17.0-alpine AS npm
 
-ENV SIMPLELOGIN_VERSION=v4.36.4
+ENV SIMPLELOGIN_VERSION=master
 ENV IMAGE_VERSION=$SIMPLELOGIN_VERSION-1
 
 RUN apk add git \
