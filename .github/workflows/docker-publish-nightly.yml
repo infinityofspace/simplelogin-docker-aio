@@ -1,10 +1,9 @@
-name: docker unstable
+name: docker nightly
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: "0 0 */3 * *"
 
 jobs:
   build:
@@ -31,7 +30,8 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/${{ secrets.GH_USERNAME }}/simplelogin-docker-aio:unstable
+            ghcr.io/${{ secrets.GH_USERNAME }}/simplelogin-docker-aio:nightly
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          context: .

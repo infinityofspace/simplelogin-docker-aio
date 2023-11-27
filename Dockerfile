@@ -1,11 +1,10 @@
 # Install npm packages
 FROM node:10.17.0-alpine AS npm
 
-ENV SIMPLELOGIN_VERSION=master
-ENV IMAGE_VERSION=$SIMPLELOGIN_VERSION-1
+ARG VERSION=master
 
 RUN apk add git \
-    && git clone --depth 1 -b $SIMPLELOGIN_VERSION https://github.com/simple-login/app.git /src
+    && git clone --depth 1 -b "$(echo $VERSION | cut -d'-' -f1)" https://github.com/simple-login/app.git /src
 
 RUN mkdir -p /code/static \
     && cp /src/static/package*.json /code/static/ \
@@ -71,4 +70,4 @@ CMD ["sh", "entrypoint.sh"]
 
 LABEL org.opencontainers.image.source="https://github.com/infinityofspace/simplelogin-docker-aio"
 LABEL org.opencontainers.image.licenses="AGPLv3"
-LABEL org.opencontainers.image.version=$IMAGE_VERSION
+LABEL org.opencontainers.image.version=$VERSION
