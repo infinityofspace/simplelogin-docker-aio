@@ -30,8 +30,8 @@ COPY --from=npm /src/poetry.lock /src/pyproject.toml ./
 
 # Install all requirements and setup poetry
 RUN apk add --no-cache poetry gcc g++ re2-dev git python3-dev musl-dev libffi-dev cmake ninja-build \
-    && if [[ $(uname -m) == armv6* ||  $(uname -m) == armv7* ]]; then \
-         apk add --no-cache postgresql-dev ninja; \
+    && if [[ $(uname -m) == arm* ]]; then \
+         apk add --no-cache postgresql-dev ninja build-base; \
          pip install psycopg2; \
        fi \
     && poetry export -f requirements.txt | pip install -r /dev/stdin
