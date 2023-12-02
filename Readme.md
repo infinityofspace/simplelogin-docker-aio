@@ -61,7 +61,7 @@ the official simplelogin [documentation](https://github.com/simple-login/app#dki
 The following changes were made to the original SimpleLogin image:
 
 - the default nameserver in the [simplelogin.env](simplelogin.env) file was changed from `1.1.1.1` to `9.9.9.9`
-- images are build for amd64, armv6, armv7 and arm64 instead of only amd64
+- images are build for amd64 and arm64 instead of only amd64
 - base image uses alpine
 - reduced image size by 75% (440MB vs 1.73GB from `app-ci:v4.36.4` image)
 
