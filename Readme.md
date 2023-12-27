@@ -39,6 +39,9 @@ docker-compose up -d
 
 ## Configuration
 
+The file [simplelogin.env](simplelogin.env) contains the two environment variables `TLS_CERT_FILE` and `TLS_CERT_KEY`,
+which must be defined in advance so that postfix can use TSL encryption.
+
 By default, the image uses in the postifx configuration the two
 blocklists [zen.spamhaus.org](https://www.spamhaus.org/zen/)
 and [bl.spamcop.net](https://www.spamcop.net/bl.shtml). You can adjust the postfix configuration by mounting your own
