@@ -47,7 +47,7 @@ RUN poetry build && pip install dist/*.whl
 
 FROM python:3.10-alpine
 
-RUN apk add --no-cache netcat-openbsd re2 libffi gnupg supervisor postfix postfix-pgsql \
+RUN apk add --no-cache netcat-openbsd re2 re2-dev libffi gnupg supervisor postfix postfix-pgsql \
     && mkdir -p /var/log/supervisord /var/run/supervisord \
     && mkdir -p /var/spool/postfix/etc/
 
