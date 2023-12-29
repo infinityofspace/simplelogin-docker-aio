@@ -5,11 +5,12 @@ Docker image for SimpleLogin [A]ll [I]n [O]ne
 ## Table of Contents
 
 1. [About](#about)
-2. [Usage](#usage)
-3. [Configuration](#configuration)
-4. [Changes](#changes)
-5. [Versioning](#versioning)
-6. [License](#license)
+2. [Requirements](#requirements)
+3. [Usage](#usage)
+4. [Configuration](#configuration)
+5. [Changes](#changes)
+6. [Versioning](#versioning)
+7. [License](#license)
 
 ## About
 
@@ -22,6 +23,21 @@ This docker image contains all the services needed to run SimpleLogin. It bundle
 
 Note: you still need a postgresql database to run SimpleLogin. You can use the official postgresql docker image which is
 used in the docker-compose example file. For more information, see the [Usage](#usage) section.
+
+## Requirements
+
+The following general requirements are needed for running SimpleLogin:
+
+- domain name
+- access to dns entries for this domain
+- tsl cert for the domain
+- public ip address
+- open port 25
+
+In addition, the following minimum system requirements are required:
+- 1 core
+- min. 512MB free RAM
+- docker
 
 ## Usage
 
@@ -59,6 +75,18 @@ services:
 Before you start you have to setup a DKIM, MX, SPF and DMARC record for your domain. Please follow the instructions in
 the official simplelogin [documentation](https://github.com/simple-login/app#dkim).
 
+### Letsencrypt certificate
+
+If you are using a Letsencrypt certificate, the path to the cert and key file for the environment
+variables `TLS_CERT_FILE` and `TLS_CERT_KEY` looks like this:
+
+```
+TLS_CERT_FILE=/path/to/letsencrypt/live/example.com/fullchain.pem
+```
+```
+TLS_CERT_KEY=/path/to/letsencrypt/live/example.com/privkey.pem
+```
+
 ## Changes
 
 The following changes were made to the original SimpleLogin image:
@@ -88,6 +116,8 @@ This project is licensed under the AGPLv3 license - see the [License](License) f
 
 Furthermore, this project uses the [SimpleLogin project](https://github.com/simple-login/app), you can find the original
 AGPLv3 license [here](https://github.com/simple-login/app/blob/master/LICENSE).
+
+This project is not associated with the SimpleLogin project nor SimpleLogin SAS.
 
 If you like SimpleLogin, please consider supporting the original
 project [here](https://github.com/simple-login/app#donations-welcome).
