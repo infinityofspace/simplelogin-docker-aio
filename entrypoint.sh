@@ -30,14 +30,14 @@ then
 fi
 
 hostname=${HOSTNAME-}
-domain=${EMAIL_DOMAIN-}
+email_domain=${EMAIL_DOMAIN-}
 
 if [ -z ${hostname} ];
 then
   echo "ERROR: HOSTNAME unset";
   exit
 fi
-if [ -z ${domain} ];
+if [ -z ${email_domain} ];
 then
   echo "ERROR: EMAIL_DOMAIN unset";
   exit
@@ -63,7 +63,7 @@ fi
 echo "creating postfix configs"
 
 sed -i "s/{HOSTNAME}/$hostname/" /etc/postfix/main.cf
-sed -i "s/{EMAIL_DOMAIN}/$domain/" /etc/postfix/main.cf
+sed -i "s/{EMAIL_DOMAIN}/$email_domain/" /etc/postfix/main.cf
 sed -i "s/{TLS_CERT_FILE}/$tls_cert_file/" /etc/postfix/main.cf
 sed -i "s/{TLS_CERT_KEY}/$tls_cert_key/" /etc/postfix/main.cf
 
@@ -71,13 +71,13 @@ sed -i "s/{POSTGRES_HOST}/$pg_host/" /etc/postfix/pgsql-relay-domains.cf
 sed -i "s/{POSTGRES_USER}/$pg_user/" /etc/postfix/pgsql-relay-domains.cf
 sed -i "s/{POSTGRES_PASSWORD}/$pg_password/" /etc/postfix/pgsql-relay-domains.cf
 sed -i "s/{POSTGRES_DB}/$pg_db/" /etc/postfix/pgsql-relay-domains.cf
-sed -i "s/{EMAIL_DOMAIN}/$domain/" /etc/postfix/pgsql-relay-domains.cf
+sed -i "s/{EMAIL_DOMAIN}/$email_domain/" /etc/postfix/pgsql-relay-domains.cf
 
 sed -i "s/{POSTGRES_HOST}/$pg_host/" /etc/postfix/pgsql-transport-maps.cf
 sed -i "s/{POSTGRES_USER}/$pg_user/" /etc/postfix/pgsql-transport-maps.cf
 sed -i "s/{POSTGRES_PASSWORD}/$pg_password/" /etc/postfix/pgsql-transport-maps.cf
 sed -i "s/{POSTGRES_DB}/$pg_db/" /etc/postfix/pgsql-transport-maps.cf
-sed -i "s/{EMAIL_DOMAIN}/$domain/" /etc/postfix/pgsql-transport-maps.cf
+sed -i "s/{EMAIL_DOMAIN}/$email_domain/" /etc/postfix/pgsql-transport-maps.cf
 
 echo "waiting for postgres to be ready..."
 while ! nc -z ${POSTGRES_HOST} ${POSTGRES_PORT:-5432}; do
