@@ -75,6 +75,18 @@ services:
 Before you start you have to setup a DKIM, MX, SPF and DMARC record for your domain. Please follow the instructions in
 the official simplelogin [documentation](https://github.com/simple-login/app#dkim).
 
+### Letsencrypt certificate
+
+If you are using a Letsencrypt certificate, the path to the cert and key file for the environment
+variables `TLS_CERT_FILE` and `TLS_CERT_KEY` looks like this:
+
+```
+TLS_CERT_FILE=/path/to/letsencrypt/live/example.com/fullchain.pem
+```
+```
+TLS_CERT_KEY=/path/to/letsencrypt/live/example.com/privkey.pem
+```
+
 ## Changes
 
 The following changes were made to the original SimpleLogin image:
