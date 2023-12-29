@@ -5,4 +5,4 @@ password = {POSTGRES_PASSWORD}
 dbname = {POSTGRES_DB}
 
 query = SELECT domain FROM custom_domain WHERE domain='%s' AND verified=true
-    UNION SELECT '%s' WHERE '%s' = '{DOMAIN}' LIMIT 1;
+    UNION SELECT '%s' WHERE '%s' = '{EMAIL_DOMAIN}' LIMIT 1;
