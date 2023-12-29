@@ -89,5 +89,8 @@ done
 DB_URI=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT:-5432}/${POSTGRES_DB} alembic upgrade head
 DB_URI=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT:-5432}/${POSTGRES_DB} python init_app.py
 
+# create empty postfix aliases
+touch /etc/aliases && postalias /etc/aliases
+
 echo "starting simplelogin"
 DB_URI=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT:-5432}/${POSTGRES_DB} /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
