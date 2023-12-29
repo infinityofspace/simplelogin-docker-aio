@@ -5,11 +5,12 @@ Docker image for SimpleLogin [A]ll [I]n [O]ne
 ## Table of Contents
 
 1. [About](#about)
-2. [Usage](#usage)
-3. [Configuration](#configuration)
-4. [Changes](#changes)
-5. [Versioning](#versioning)
-6. [License](#license)
+2. [Requirements](#requirements)
+3. [Usage](#usage)
+4. [Configuration](#configuration)
+5. [Changes](#changes)
+6. [Versioning](#versioning)
+7. [License](#license)
 
 ## About
 
@@ -22,6 +23,21 @@ This docker image contains all the services needed to run SimpleLogin. It bundle
 
 Note: you still need a postgresql database to run SimpleLogin. You can use the official postgresql docker image which is
 used in the docker-compose example file. For more information, see the [Usage](#usage) section.
+
+## Requirements
+
+The following general requirements are needed for running SimpleLogin:
+
+- domain name
+- access to dns entries for this domain
+- tsl cert for the domain
+- public ip address
+- open port 25
+
+In addition, the following minimum system requirements are required:
+- 1 core
+- min. 512MB free RAM
+- docker
 
 ## Usage
 
