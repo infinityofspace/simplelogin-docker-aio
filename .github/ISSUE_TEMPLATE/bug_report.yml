@@ -1,0 +1,93 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees:
+
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for taking the time to fill out this bug report!"
+
+  - type: textarea
+    id: system-os-info
+    attributes:
+      label: OS 
+      description: Which operating system and version are you using?
+      placeholder: eg. Debian 12 , Ubuntu 23.10, Arch 6.6.3, Windows 10, MacOS 12
+    validations:
+      required: true
+
+  - type: textarea
+    id: docker-version
+    attributes:
+      label: Docker version
+      description: Which docker version are you using?
+    validations:
+      required: true
+
+  - type: textarea
+    id: docker-compose-version
+    attributes:
+      label: docker-compose version (optional)
+      description: Which docker-compose version are you using?
+    validations:
+      required: false
+
+  - type: textarea
+    id: version-info
+    attributes:
+      label: version
+      description: Which simplelogin-docker-aio version are you using?
+      placeholder: eg. v4.36.7-1
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug description
+      description: A clear and concise description of what the bug is.
+      placeholder: What happend?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output.
+      render: shell
+    validations:
+      required: false
+      
+  - type: textarea
+    id: reproduce-steps
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the behavior. Also include all required files such as `docker-compose.yml` and configuration files if they are needed for reproduction.
+      placeholder: How can the error be reproduced?
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: All further information on the context of the bug that does not belong to the other sections, such as a workaround or already tested approaches to a solution.
+      placeholder: Is there any further context?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please check off the following checklist after you have performed the corresponding actions
+      options:
+        - label: I have checked for [existing Github issues](https://github.com/infinityofspace/simplelogin-docker-aio/issues) for the same bug.
+          required: true
+        - label: I have checked to see if there is no current version that already fixes this error.
+          required: true
+        - label: I have checked that I meet the [general and system requirements](https://github.com/infinityofspace/simplelogin-docker-aio/blob/main/Readme.md) for the use of this project.
+          required: true
