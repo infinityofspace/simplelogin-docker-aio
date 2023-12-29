@@ -105,5 +105,7 @@ This project is licensed under the AGPLv3 license - see the [License](License) f
 Furthermore, this project uses the [SimpleLogin project](https://github.com/simple-login/app), you can find the original
 AGPLv3 license [here](https://github.com/simple-login/app/blob/master/LICENSE).
 
+This project is not associated with the SimpleLogin project nor SimpleLogin SAS.
+
 If you like SimpleLogin, please consider supporting the original
 project [here](https://github.com/simple-login/app#donations-welcome).
