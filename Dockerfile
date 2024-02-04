@@ -66,6 +66,9 @@ WORKDIR /code
 COPY --from=npm /src .
 COPY entrypoint.sh .
 
+# apply patches
+COPY patches /code
+
 EXPOSE 7777 25
 
 ENV WEBAPP_WORKERS=2
