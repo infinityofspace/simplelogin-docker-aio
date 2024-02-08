@@ -67,7 +67,7 @@ COPY --from=npm /src .
 COPY entrypoint.sh .
 
 # apply patches
-COPY patches /code
+#COPY patches /code
 
 EXPOSE 7777 25
 
