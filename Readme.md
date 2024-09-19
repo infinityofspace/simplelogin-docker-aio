@@ -2,6 +2,10 @@
 
 Docker image for SimpleLogin [A]ll [I]n [O]ne
 
+---
+
+[![Nightly Build Status](https://img.shields.io/github/actions/workflow/status/infinityofspace/simplelogin-docker-aio/docker-publish-nightly.yml?style=for-the-badge&label=nightly+builds)](https://github.com/infinityofspace/simplelogin-docker-aio/actions/workflows/docker-publish-nightly.yml)
+
 ## Table of Contents
 
 1. [About](#about)
