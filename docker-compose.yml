@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   simplelogin:
     image: ghcr.io/infinityofspace/simplelogin-docker-aio:latest
