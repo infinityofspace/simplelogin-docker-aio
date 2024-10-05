@@ -19,6 +19,11 @@ services:
     environment:
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://127.0.0.1:7777 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   db:
     image: postgres:12.1
@@ -27,6 +32,11 @@ services:
       - "db_data:/var/lib/postgresql/data"
     env_file:
       - db.env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   data:
