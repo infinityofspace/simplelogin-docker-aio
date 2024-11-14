@@ -31,10 +31,13 @@ COPY --from=npm /src/poetry.lock /src/pyproject.toml ./
 # Install all requirements and setup poetry
 RUN apk add --no-cache poetry gcc g++ re2-dev git python3-dev musl-dev libffi-dev cmake ninja-build \
     && if [[ $(uname -m) == arm* || $(uname -m) == aarch64 ]]; then \
-         apk add --no-cache postgresql-dev ninja build-base; \
-         pip install psycopg2; \
-       fi \
-    && poetry export -f requirements.txt | pip install -r /dev/stdin
+    apk add --no-cache postgresql-dev ninja build-base; \
+    pip install psycopg2; \
+    fi \
+    && poetry export -f requirements.txt \
+    && sed '/gevent/d' requirements.txt \
+    && pip install -r requirements.txt \
+    && pip install "gevent~=24.11"
 
 # copy npm packages
 COPY --from=npm /code /code
@@ -44,7 +47,7 @@ COPY --from=npm /src .
 
 RUN poetry build && pip install dist/*.whl
 
-
+## Final image ##
 FROM python:3.10-alpine
 
 RUN apk add --no-cache netcat-openbsd re2 re2-dev libffi gnupg supervisor postfix postfix-pgsql \
