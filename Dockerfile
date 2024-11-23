@@ -34,8 +34,8 @@ RUN apk add --no-cache poetry gcc g++ re2-dev git python3-dev musl-dev libffi-de
     apk add --no-cache postgresql-dev ninja build-base; \
     pip install psycopg2; \
     fi \
-    && poetry export -f requirements.txt \
-    && sed '/gevent/d' requirements.txt \
+    && poetry export -f requirements.txt > requirements.txt \
+    && sed -i '/gevent/d' requirements.txt \
     && pip install -r requirements.txt \
     && pip install "gevent~=24.11"
 
