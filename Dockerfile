@@ -10,34 +10,26 @@ RUN mkdir -p /code/static \
     && cp /src/static/package*.json /code/static/ \
     && cd /code/static && npm ci
 
-
-FROM python:3.10-alpine as poetry-builder
+FROM ghcr.io/astral-sh/uv:0.6-debian-slim AS uv-builder
 
 # Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED 1
-
-ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /code
 
-RUN python -m venv /opt/venv
+COPY --from=npm /src/.python-version .
+RUN uv python install $(cat .python-version)
+RUN uv venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Copy poetry files
-COPY --from=npm /src/poetry.lock /src/pyproject.toml ./
+COPY --from=npm /src/pyproject.toml /src/uv.lock ./
 
 # Install all requirements and setup poetry
-RUN apk add --no-cache poetry gcc g++ re2-dev git python3-dev musl-dev libffi-dev cmake ninja-build \
-    && if [[ $(uname -m) == arm* || $(uname -m) == aarch64 ]]; then \
-    apk add --no-cache postgresql-dev ninja build-base; \
-    pip install psycopg2; \
-    fi \
-    && poetry export -f requirements.txt > requirements.txt \
-    && sed -i '/gevent/d' requirements.txt \
-    && pip install -r requirements.txt \
-    && pip install "gevent~=24.11"
+RUN apt-get update \
+    && apt-get install -y gcc python3-dev gnupg git libre2-dev build-essential pkg-config cmake ninja-build bash clang \
+    && uv sync
 
 # copy npm packages
 COPY --from=npm /code /code
@@ -45,16 +37,16 @@ COPY --from=npm /code /code
 # copy everything else into /code
 COPY --from=npm /src .
 
-RUN poetry build && pip install dist/*.whl
+RUN uv build
 
 ## Final image ##
-FROM python:3.10-alpine
+FROM python:3.12-alpine
 
 RUN apk add --no-cache netcat-openbsd re2 re2-dev libffi gnupg supervisor postfix postfix-pgsql \
     && mkdir -p /var/log/supervisord /var/run/supervisord \
     && mkdir -p /var/spool/postfix/etc/
 
-COPY --from=poetry-builder /opt/venv /opt/venv
+COPY --from=uv-builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # copy postfix configs
