@@ -12,42 +12,40 @@ RUN mkdir -p /code/static \
 
 FROM ghcr.io/astral-sh/uv:0.6-debian-slim AS uv-builder
 
-# Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE=1
-# Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED=1
+ENV UV_LINK_MODE=copy
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_PYTHON_PREFERENCE=only-managed
+ENV UV_PYTHON_INSTALL_DIR=/python
 
-WORKDIR /code
+RUN apt-get update \
+    && apt-get install -y gcc python3-dev gnupg git libre2-dev build-essential pkg-config cmake ninja-build clang
+
+WORKDIR /app
 
 COPY --from=npm /src/.python-version .
 RUN uv python install $(cat .python-version)
-RUN uv venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
 
-COPY --from=npm /src/pyproject.toml /src/uv.lock ./
+COPY --from=npm /src/uv.lock /src/pyproject.toml ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-install-project --no-dev
 
-# Install all requirements and setup poetry
-RUN apt-get update \
-    && apt-get install -y gcc python3-dev gnupg git libre2-dev build-essential pkg-config cmake ninja-build bash clang \
-    && uv sync
-
-# copy npm packages
 COPY --from=npm /code /code
+COPY --from=npm /src ./
 
-# copy everything else into /code
-COPY --from=npm /src .
-
-RUN uv build
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
 
 ## Final image ##
-FROM python:3.12-alpine
+FROM debian:12-slim
 
-RUN apk add --no-cache netcat-openbsd re2 re2-dev libffi gnupg supervisor postfix postfix-pgsql \
-    && mkdir -p /var/log/supervisord /var/run/supervisord \
-    && mkdir -p /var/spool/postfix/etc/
+RUN apt-get update \
+    && apt-get install -y netcat-openbsd libre2-dev libffi-dev gnupg supervisor postfix postfix-pgsql \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY --from=uv-builder /opt/venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+COPY --from=uv-builder --chown=python:python /python /python
+COPY --from=uv-builder --chown=app:app /app /app
+ENV PATH="/app/.venv/bin:$PATH"
 
 # copy postfix configs
 COPY configs/postfix/main.cf /etc/postfix/main.cf
@@ -56,13 +54,7 @@ COPY configs/postfix/pgsql-transport-maps.cf /etc/postfix/pgsql-transport-maps.c
 
 COPY configs/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-WORKDIR /code
-
-COPY --from=npm /src .
 COPY entrypoint.sh .
-
-# apply patches
-#COPY patches /code
 
 EXPOSE 7777 25
 
