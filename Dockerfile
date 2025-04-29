@@ -16,7 +16,8 @@ COPY --from=ghcr.io/astral-sh/uv:0.6.9 /uv /bin/uv
 
 WORKDIR /app
 
-RUN apk add --no-cache gcc g++ re2-dev git python3-dev musl-dev libffi-dev cmake ninja-build
+RUN apk add --no-cache gcc g++ re2-dev git python3-dev musl-dev libffi-dev cmake ninja-build \
+    build-essential cython3 pybind11-dev libre2-dev
 
 COPY --from=npm /src/uv.lock /src/pyproject.toml ./
 RUN --mount=type=cache,target=/root/.cache/uv \
