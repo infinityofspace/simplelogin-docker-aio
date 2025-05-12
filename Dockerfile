@@ -10,14 +10,14 @@ RUN mkdir -p /code/static \
     && cp /src/static/package*.json /code/static/ \
     && cd /code/static && npm ci
 
-FROM python:3.12-alpine as uv-builder
+FROM python:3.12-alpine AS uv-builder
 
-COPY --from=ghcr.io/astral-sh/uv:0.6.9 /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.7.3 /uv /bin/uv
 
 WORKDIR /app
 
 RUN apk add --no-cache gcc g++ re2-dev git python3-dev musl-dev libffi-dev cmake ninja-build \
-    build-essential cython3 pybind11-dev libre2-dev
+    build-base cython py3-pybind11-dev re2-dev
 
 COPY --from=npm /src/uv.lock /src/pyproject.toml ./
 RUN --mount=type=cache,target=/root/.cache/uv \
