@@ -34,7 +34,8 @@ RUN apk add --no-cache \
 
 COPY --from=npm /src/uv.lock /src/pyproject.toml ./
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-install-project --no-dev
+    uv venv --seed \
+    && uv sync --frozen --no-install-project --no-dev --no-build-isolation-package cbor2
 
 COPY --from=npm /code /code
 COPY --from=npm /src ./
