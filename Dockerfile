@@ -36,7 +36,7 @@ COPY --from=npm /src/uv.lock /src/pyproject.toml ./
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv venv --seed \
     && uv pip install wheel \
-    && uv sync --frozen --no-install-project --no-dev --no-build-isolation-package cbor2
+    && uv sync --frozen --no-install-project --no-dev
 
 COPY --from=npm /code /code
 COPY --from=npm /src ./
