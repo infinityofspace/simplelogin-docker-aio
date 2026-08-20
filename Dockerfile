@@ -10,27 +10,25 @@ RUN mkdir -p /code/static \
     && cp /src/static/package*.json /code/static/ \
     && cd /code/static && npm ci
 
-FROM python:3.12-alpine AS uv-builder
+FROM python:3.14-slim-bookworm AS uv-builder
 
-COPY --from=ghcr.io/astral-sh/uv:0.11.8 /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.12.3 /uv /bin/uv
 
 WORKDIR /app
 
-RUN apk add --no-cache \
-    gcc \
-    g++ \
-    re2-dev \
-    git \
-    python3-dev \
-    musl-dev \
-    libffi-dev \
-    cmake \
-    linux-headers \
-    ninja-build \
-    build-base \
-    cython \
-    py3-pybind11-dev \
-    re2-dev
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+        build-essential \
+        libre2-dev \
+        git \
+        python3-dev \
+        libffi-dev \
+        cmake \
+        linux-headers-amd64 \
+        ninja-build \
+        cython3 \
+        pybind11-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=npm /src/uv.lock /src/pyproject.toml ./
 RUN --mount=type=cache,target=/root/.cache/uv \
@@ -42,9 +40,19 @@ COPY --from=npm /code /code
 COPY --from=npm /src ./
 
 ## Final image ##
-FROM python:3.12-alpine
+FROM python:3.14-slim-bookworm
 
-RUN apk add --no-cache netcat-openbsd re2 re2-dev libffi gnupg supervisor postfix postfix-pgsql \
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+        netcat-openbsd \
+        libre2-9 \
+        libre2-dev \
+        libffi8 \
+        gnupg \
+        supervisor \
+        postfix \
+        postfix-pgsql \
+    && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /var/log/supervisord /var/run/supervisord \
     && mkdir -p /var/spool/postfix/etc/
 
