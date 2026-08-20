@@ -24,7 +24,6 @@ RUN apt-get update \
         python3-dev \
         libffi-dev \
         cmake \
-        linux-headers-amd64 \
         ninja-build \
         cython3 \
         pybind11-dev \
